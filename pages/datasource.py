@@ -50,7 +50,7 @@ class DataSourcePage:
         self.page.wait_for_timeout(1000)
 
     def verify_data_entry(self):
-        expect(self.page.locator("//div[@class='view-lines monaco-mouse-cursor-text']")).to_contain_text("2024-03-25T12:00:00Z,20", timeout=5000)
+        expect(self.page.locator("//div[@class='view-lines monaco-mouse-cursor-text']")).to_contain_text("2024-03-25T12:00:00Z,10", timeout=5000)
 
     def refresh_dashboard(self):
         """Clicks the Refresh button to update the dashboard."""
@@ -65,3 +65,31 @@ class DataSourcePage:
         """Captures a screenshot of the visualization."""
         self.page.locator(".css-itdw1b-panel-container").screenshot(path=screenshot_path)
         return screenshot_path
+
+    def cleanup(self):
+        self.page.goto("http://localhost:3000/connections/datasources")
+
+        # Wait for the page to load
+        self.page.wait_for_selector("a[href^='/connections/datasources/edit']", timeout=5000)
+
+        # Click on the specific data source
+        data_source_link = self.page.locator("a[href^='/connections/datasources/edit']").first
+
+        if data_source_link.is_visible():
+            data_source_link.click()
+        else:
+            print("Data source link not found.")
+            return
+
+        # Wait for delete button to appear and click it
+        self.page.wait_for_selector("button:has-text('Delete')", timeout=5000)
+        self.page.get_by_role("button").get_by_text("Delete").click()
+
+        # Confirm deletion
+        delete_button = self.page.locator("button[data-testid='data-testid Confirm Modal Danger Button']")
+
+        if delete_button.is_visible():
+            delete_button.click()
+            print("Data source deleted successfully.")
+        else:
+            print("Delete button not found.")

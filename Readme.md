@@ -27,7 +27,7 @@ Ensure you have the following installed:
 ### Running Locally
 1. Start a local Grafana instance:
    ```sh
-   docker run -d -p 3000:3000 grafana/grafana
+   docker run -d --name grafana -p 3000:3000 grafana/grafana
    ```
 2. Run the test script:
    ```sh
@@ -49,7 +49,9 @@ Ensure you have the following installed:
 - A Timeseries visualization is generated.
 - A screenshot is taken and compared against a reference image.
 - The test passes if the comparison is successful.
+- Difference.png generate if image is not same.
 
 ## Notes
 - Ensure the `reference_screenshot.png` is available in the project.
 - Modify the test script if running with different Grafana configurations.
+- To modify data edit (utils/csv_data.py and pages/datasource{verify_data_entry()})
